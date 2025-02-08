@@ -1,0 +1,15 @@
+{
+  "name": "bookshelfconnect",
+  "version": "1.0.0",
+  "description": "BookShelfConnect is a platform where book enthusiasts can share, review, and discover books. This project will focus on creating a robust backend API using Node.js and QuikDB.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "author": "chidera okere",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
