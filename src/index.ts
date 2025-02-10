@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import { quikdb, initOwner } from './config/db'
+import { Database } from './config/db'
 
 dotenv.config()
 
@@ -29,13 +29,28 @@ app.get('/', (req, res) => {
 // Initialize QuikDB and Start Server
 const startServer = async () => {
   try {
-    await quikdb.init()
-    await initOwner()
-    console.log('QuikDB Initialized Successfully')
+    console.log('🚀 Initializing QuikDB...')
+    const dbInstance = await Database.getInstance()
 
-    app.listen(PORT, () => {
+    await Database.initOwner() // Ensure the owner is set
+
+    console.log('✅ QuikDB Initialized Successfully')
+
+    const server = app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`)
     })
+
+    // Graceful Shutdown
+    const shutdown = () => {
+      console.log('🛑 Shutting down server...')
+      server.close(() => {
+        console.log('✅ Server closed. Cleaning up resources...')
+        process.exit(0)
+      })
+    }
+
+    process.on('SIGINT', shutdown)
+    process.on('SIGTERM', shutdown)
   } catch (error) {
     console.error('❌ Error initializing QuikDB:', error)
     process.exit(1) // Exit if QuikDB fails to initialize
