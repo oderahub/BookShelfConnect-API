@@ -17,10 +17,10 @@ export enum ApiErrors {
   BOOK_ALREADY_EXISTS = 'Book with this ISBN already exists'
 }
 
-export const sendError = (res: Response, error: ApiErrors | string, status: number = 400) => {
-  res.status(status).json({
+export const sendError = (res: Response, error: string | object, statusCode = 400) => {
+  res.status(statusCode).json({
     success: false,
-    error: typeof error === 'string' ? error : ApiErrors[error]
+    error
   })
 }
 
