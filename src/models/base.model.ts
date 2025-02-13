@@ -7,30 +7,41 @@ import {
 } from 'quikdb-cli-beta/v1/sdk'
 import { Database } from '../config/db'
 import { BaseEntity } from '../types/index'
+import { v4 as uuidv4 } from 'uuid'
 
 export abstract class BaseModel<T extends BaseEntity> {
-  protected db!: QuikDB
+  protected db!: QuikDB // Or use QuikDB | undefined if you prefer to check for undefined
   protected abstract schemaName: string
 
   constructor() {
-    this.initializeDB()
+    this.initializeDB() // Start the initialization process
   }
 
-  private async initializeDB(): Promise<void> {
+  public async initializeDB(): Promise<void> {
     try {
       this.db = await Database.getInstance()
+      console.log('Database initialized successfully!')
     } catch (error) {
       console.error(`❌ Failed to initialize database:`, error)
       throw new Error('Database initialization failed')
     }
   }
 
-  protected abstract defineSchema(): Promise<void>
+  // Ensure methods that need db are async and check if db is initialized
+  public async defineSchema(): Promise<void> {
+    if (!this.db) {
+      await this.initializeDB() // Await here if db is not set
+    }
+    // Here you would define what 'defineSchema' means for this base model if needed
+  }
 
   async create(data: Omit<T, 'id'>): Promise<ResultBool> {
+    if (!this.db) {
+      await this.initializeDB()
+    }
     try {
       const record = {
-        id: null, // Ensure QuikDB auto-generates an ID
+        id: uuidv4(),
         fields: Object.entries({
           ...data,
           createdAt: new Date().toISOString(),
@@ -38,6 +49,10 @@ export abstract class BaseModel<T extends BaseEntity> {
         })
       }
       const args = [this.schemaName, record]
+      if (!data || Object.keys(data).length === 0) {
+        throw new Error('Data cannot be empty')
+      }
+
       return await this.db.callCanisterMethod<ResultBool>(CanisterMethod.CreateRecordData, args)
     } catch (error) {
       console.error(`❌ Error creating record:`, error)
@@ -46,6 +61,9 @@ export abstract class BaseModel<T extends BaseEntity> {
   }
 
   async findById(id: string): Promise<ResultRecords> {
+    if (!this.db) {
+      await this.initializeDB()
+    }
     try {
       const args = [this.schemaName, id]
       return await this.db.callCanisterMethod<ResultRecords>(CanisterMethod.GetRecord, args)
@@ -56,6 +74,9 @@ export abstract class BaseModel<T extends BaseEntity> {
   }
 
   async findAll(page: number = 1, pageSize: number = 10): Promise<ResultRecords> {
+    if (!this.db) {
+      await this.initializeDB()
+    }
     try {
       const args = [this.schemaName]
       const result = await this.db.callCanisterMethod<ResultRecords>(
@@ -78,6 +99,9 @@ export abstract class BaseModel<T extends BaseEntity> {
   }
 
   async update(id: string, data: Partial<T>): Promise<ResultBool> {
+    if (!this.db) {
+      await this.initializeDB()
+    }
     try {
       const updateData = { ...data, updatedAt: new Date().toISOString() }
       const args = [this.schemaName, id, Object.entries(updateData)]
@@ -89,6 +113,9 @@ export abstract class BaseModel<T extends BaseEntity> {
   }
 
   async delete(id: string): Promise<ResultBool> {
+    if (!this.db) {
+      await this.initializeDB()
+    }
     try {
       const args = [this.schemaName, id]
       return await this.db.callCanisterMethod<ResultBool>(CanisterMethod.DeleteRecord, args)
@@ -99,6 +126,9 @@ export abstract class BaseModel<T extends BaseEntity> {
   }
 
   async search<K extends keyof T>(field: K, value: string): Promise<ResultRecords> {
+    if (!this.db) {
+      await this.initializeDB()
+    }
     try {
       const args = [this.schemaName, String(field), value]
       return await this.db.callCanisterMethod<ResultRecords>(CanisterMethod.SearchByIndex, args)

@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import 'express-async-errors'
 import userRoutes from './routes/user.routes'
 import bookRoutes from './routes/book.routes'
+import { setupDatabase } from './utils/helper'
 
 dotenv.config()
 
@@ -63,8 +64,11 @@ const startServer = async () => {
 
     console.log('✅ QuikDB Initialized Successfully')
 
+    // Define schemas here before starting the server
+    await setupDatabase({ defineSchema: true })
+
     const server = app.listen(PORT, () => {
-      console.log('🚀 Server is running on port ${PORT}')
+      console.log(`🚀 Server is running on port ${PORT}`)
     })
 
     // Graceful Shutdown

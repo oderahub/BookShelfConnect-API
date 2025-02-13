@@ -25,30 +25,3 @@ export class Database {
     }
   }
 }
-
-// Usage example:
-// (async () => {
-//   const dbInstance = await Database.getInstance();
-//   // Use dbInstance here
-// })();
-
-// import { QuikDB, CanisterMethod, ResultBool } from 'quikdb-cli-beta/v1/sdk'
-
-// const quikdb: QuikDB = new QuikDB()
-
-// ;(async () => {
-//   await quikdb.init()
-//   console.log('QuikDB initialized successfully.')
-// })()
-
-// // Initialize Owner (Only needed once)
-// const initOwner = async () => {
-//   const initOwnerResult: ResultBool = await quikdb.callCanisterMethod(CanisterMethod.InitOwner, [])
-//   if (initOwnerResult.ok) {
-//     console.log('✅ QuikDB Owner initialized successfully.')
-//   } else {
-//     console.error(`❌ Error initializing owner: ${initOwnerResult}`)
-//   }
-// }
-
-// export { quikdb, initOwner }
