@@ -17,9 +17,9 @@ export class BookModel extends BaseModel<Book> {
           { name: 'ownerId', type: 'string', fieldType: 'Text', required: true, unique: false },
           {
             name: 'averageRating',
-            type: 'float',
-            fieldType: 'Float',
-            required: true,
+            type: 'int',
+            fieldType: 'Int',
+            required: false,
             unique: false
           },
           { name: 'reviewCount', type: 'int', fieldType: 'Int', required: true, unique: false },

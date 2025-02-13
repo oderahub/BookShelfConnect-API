@@ -55,9 +55,11 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 const startServer = async () => {
   try {
     console.log('🚀 Initializing QuikDB...')
-    await Database.getInstance()
 
-    await Database.initOwner() // Ensure the owner is set
+    const instance = await Database.getInstance()
+    await instance.init()
+
+    await Database.initOwner(instance) // Ensure the owner is set
 
     console.log('✅ QuikDB Initialized Successfully')
 

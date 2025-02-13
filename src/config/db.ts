@@ -16,17 +16,10 @@ export class Database {
     return Database.instance
   }
 
-  // ✅ Change from private → public so it can be accessed in `startServer`
-  public static async initOwner(): Promise<void> {
+  // ✅ Make initOwner public to be accessible in `startServer`
+  public static async initOwner(instance: QuikDB): Promise<void> {
     try {
-      const instance = await Database.getInstance()
-      const initOwnerResult = await instance.callCanisterMethod(CanisterMethod.InitOwner, [])
-
-      if (initOwnerResult) {
-        console.log('✅ QuikDB Owner initialized successfully.')
-      } else {
-        console.error(`❌ Error initializing owner: ${initOwnerResult}`)
-      }
+      await instance.callCanisterMethod(CanisterMethod.InitOwner, [])
     } catch (error) {
       console.error('❌ Failed to initialize QuikDB Owner:', error)
     }
@@ -51,7 +44,7 @@ export class Database {
 // // Initialize Owner (Only needed once)
 // const initOwner = async () => {
 //   const initOwnerResult: ResultBool = await quikdb.callCanisterMethod(CanisterMethod.InitOwner, [])
-//   if (initOwnerResult) {
+//   if (initOwnerResult.ok) {
 //     console.log('✅ QuikDB Owner initialized successfully.')
 //   } else {
 //     console.error(`❌ Error initializing owner: ${initOwnerResult}`)
