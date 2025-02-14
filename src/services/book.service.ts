@@ -45,32 +45,4 @@ export class BookService extends BaseService<Book> {
       )
     }
   }
-
-  async updateRating(bookId: string, rating: number): Promise<ApiResponse<boolean>> {
-    try {
-      const book = await this.findById(bookId)
-
-      if (!book.success || !book.data) {
-        return ApiResponse.error('Book not found')
-      }
-
-      const currentReviewCount = book.data.reviewCount ?? 0
-      const currentAverageRating = book.data.averageRating ?? 0
-
-      const newReviewCount = currentReviewCount + 1
-      const newAverageRating = (currentAverageRating * currentReviewCount + rating) / newReviewCount
-
-      const updateResult = await this.update(bookId, {
-        averageRating: newAverageRating,
-        reviewCount: newReviewCount
-      })
-
-      return updateResult
-    } catch (error) {
-      console.error('❌ Service error during updateRating:', error)
-      return ApiResponse.error(
-        `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
-      )
-    }
-  }
 }

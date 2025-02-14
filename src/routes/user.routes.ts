@@ -17,7 +17,7 @@ router.put(
   validate(userSchemas.update),
   controller.update.bind(controller)
 )
-router.delete('/account', authMiddleware, controller.delete.bind(controller))
+router.delete('/:id', authMiddleware, controller.delete.bind(controller))
 router.post('/logout', authMiddleware, controller.logout.bind(controller))
 
 export default router

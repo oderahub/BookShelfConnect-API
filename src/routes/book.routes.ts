@@ -24,11 +24,18 @@ const router = Router()
 const controller = new BookController()
 
 // Public routes
-router.get('/', controller.findAll.bind(controller))
-router.get('/search', validate(bookSchemas.search), controller.searchByTitle.bind(controller))
-router.get('/:bookId', controller.findById.bind(controller))
+router.get('/', authMiddleware, controller.findAll.bind(controller))
+router.get(
+  '/search',
+  authMiddleware,
+  validate(bookSchemas.search),
+  controller.searchByTitle.bind(controller)
+)
+router.get('/:id', authMiddleware, controller.findById.bind(controller))
 
 // Protected routes with auth
 router.post('/', authMiddleware, validate(bookSchemas.create), controller.create.bind(controller))
+router.put('/:id', authMiddleware, validate(bookSchemas.update), controller.update.bind(controller))
+router.delete('/:id', authMiddleware, controller.delete.bind(controller))
 
 export default router

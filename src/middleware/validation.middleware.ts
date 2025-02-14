@@ -1,10 +1,24 @@
+// validation.middleware.ts
 import { Request, Response, NextFunction } from 'express'
 import { ZodSchema } from 'zod'
 import { sendError } from '../constants/error'
 
 export const validate = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.body)
+    // Determine whether to validate req.body or req.query based on the request method
+    const data = req.method === 'GET' ? req.query : req.body
+
+    // Parse query parameters explicitly for GET requests to match schema structure
+    const parsedData =
+      req.method === 'GET'
+        ? {
+            title: req.query.title || undefined,
+            author: req.query.author || undefined,
+            isbn: req.query.isbn || undefined
+          }
+        : data
+
+    const result = schema.safeParse(parsedData)
 
     if (!result.success) {
       return sendError(
@@ -20,6 +34,8 @@ export const validate = (schema: ZodSchema) => {
       )
     }
 
+    // Attach validated data to the request
+    req.validatedData = result.data
     next()
   }
 }

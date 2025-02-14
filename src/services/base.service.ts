@@ -32,13 +32,14 @@ export abstract class BaseService<T extends BaseEntity> {
   async findById(id: string): Promise<ApiResponse<T>> {
     try {
       const result: ResultRecords = await this.model.findById(id)
-
+      if ('err' in result) {
+        console.error(`❌ Error retrieving record: ${result.err}`)
+        return ApiResponse.error(`Record retrieval failed: ${result.err}`)
+      }
       if ('ok' in result && Array.isArray(result.ok) && result.ok.length > 0) {
         return ApiResponse.success(result.ok[0] as unknown as T)
-      } else {
-        console.error(`❌ Record with ID ${id} not found`)
-        return ApiResponse.error('Record not found')
       }
+      return ApiResponse.error('Record not found')
     } catch (error) {
       console.error(`❌ Service error during findById:`, error)
       return ApiResponse.error(

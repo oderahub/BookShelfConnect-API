@@ -57,8 +57,8 @@ export class UserModel extends BaseModel<User> {
   async createUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<ResultBool> {
     const userWithTimestamps = {
       ...userData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString()
     }
     return this.create(userWithTimestamps)
   }
