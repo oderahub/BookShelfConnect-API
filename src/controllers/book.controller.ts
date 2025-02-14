@@ -18,9 +18,7 @@ export class BookController extends BaseController<Book> {
 
       const bookData = {
         ...req.body,
-        ownerId: req.user.userId,
-        averageRating: 0,
-        reviewCount: 0
+        ownerId: req.user.userId
       }
 
       const result = await this.service.create(bookData)

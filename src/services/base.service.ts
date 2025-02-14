@@ -28,6 +28,39 @@ export abstract class BaseService<T extends BaseEntity> {
       )
     }
   }
+  // async create(data: Omit<T, 'id'>): Promise<ApiResponse<T>> {
+  //   try {
+  //     const result: ResultBool = await this.model.create(data)
+
+  //     if ('ok' in result && result.ok === true) {
+  //       const createdId = (result as any).id
+
+  //       // Fetch the full user data after creation
+  //       const createdRecordResponse = await this.findById(createdId)
+  //       if (createdRecordResponse.success) {
+  //         if (createdRecordResponse.data) {
+  //           return ApiResponse.success(createdRecordResponse.data, 'Created successfully')
+  //         } else {
+  //           return ApiResponse.error('Creation succeeded but data retrieval failed')
+  //         }
+  //       } else {
+  //         console.warn(`⚠️ User created, but unable to retrieve full data`)
+  //         return ApiResponse.success(
+  //           { ...data, id: createdId } as T,
+  //           'Created successfully (partial data)'
+  //         )
+  //       }
+  //     } else {
+  //       console.error(`❌ Create operation failed:`, result)
+  //       return ApiResponse.error('Creation failed')
+  //     }
+  //   } catch (error) {
+  //     console.error(`❌ Service error during create:`, error)
+  //     return ApiResponse.error(
+  //       `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
+  //     )
+  //   }
+  // }
 
   async findById(id: string): Promise<ApiResponse<T>> {
     try {

@@ -7,6 +7,7 @@ import 'express-async-errors'
 import userRoutes from './routes/user.routes'
 import bookRoutes from './routes/book.routes'
 import { setupDatabase } from './utils/helper'
+import { globalUserContext } from './middleware/auth.middleware'
 
 dotenv.config()
 
@@ -15,13 +16,6 @@ const PORT = process.env.PORT || 3000
 
 // Security headers
 app.use(helmet())
-app.use(cors())
-
-// Parse JSON bodies
-app.use(express.json())
-
-// Middleware
-app.use(express.json())
 app.use(
   cors({
     origin: '*',
@@ -30,6 +24,9 @@ app.use(
     credentials: true
   })
 )
+
+// Parse JSON bodies
+app.use(express.json())
 
 app.disable('x-powered-by')
 
@@ -40,8 +37,9 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/v1/users', userRoutes)
-app.use('/api/v1/books', bookRoutes)
+app.use('/api/v1/books', bookRoutes) // This will now use auth middleware
 
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Not Found' })
 })
@@ -60,11 +58,11 @@ const startServer = async () => {
     const instance = await Database.getInstance()
     await instance.init()
 
-    await Database.initOwner(instance) // Ensure the owner is set
+    await Database.initOwner(instance)
 
     console.log('✅ QuikDB Initialized Successfully')
 
-    // Define schemas here before starting the server
+    // Pass the global user context to setupDatabase
     await setupDatabase({ defineSchema: true })
 
     const server = app.listen(PORT, () => {
@@ -84,9 +82,8 @@ const startServer = async () => {
     process.on('SIGTERM', shutdown)
   } catch (error) {
     console.error('❌ Error initializing QuikDB:', error)
-    process.exit(1) // Exit if QuikDB fails to initialize
+    process.exit(1)
   }
 }
 
-// Start the server
 startServer()

@@ -16,10 +16,11 @@ export interface User extends BaseEntity {
 export interface Book extends BaseEntity {
   title: string
   author: string
-  isbn: string
+  isbn?: string
   description: string
   ownerId: string
-  reviews: number
   averageRating: number
   reviewCount: number
+  createdAt: Date | string
+  updatedAt: Date | string
 }

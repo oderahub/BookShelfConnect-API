@@ -44,8 +44,8 @@ export abstract class BaseModel<T extends BaseEntity> {
         id: uuidv4(),
         fields: Object.entries({
           ...data,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          createdAt: new Date().toString(),
+          updatedAt: new Date().toString()
         })
       }
       const args = [this.schemaName, record]

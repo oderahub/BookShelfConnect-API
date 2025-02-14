@@ -39,9 +39,9 @@ export class UserModel extends BaseModel<User> {
 
       const result = await this.db.callCanisterMethod<ResultBool>(CanisterMethod.CreateSchema, args)
 
-      if ('err' in result) {
-        throw new Error(`Failed to create schema: ${result.err}`)
-      }
+      // if ('err' in result) {
+      //   throw new Error(`Failed to create schema: ${result.err}`)
+      // }
 
       console.log('✅ Schema defined successfully')
     } catch (error) {

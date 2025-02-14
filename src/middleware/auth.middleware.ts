@@ -1,13 +1,18 @@
 import { Request, Response, NextFunction } from 'express'
 import { verify, JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
 import { ApiErrors, sendError } from '../constants/error'
+import { UserContext } from '../utils/user.context'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
 export interface AuthRequest extends Request {
   user?: { userId: string }
+  userContext?: UserContext
 }
+
+// Create a singleton instance of UserContext
+export const globalUserContext = new UserContext()
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(' ')[1]
@@ -21,6 +26,11 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   try {
     const decoded = verify(token, process.env.JWT_SECRET) as { userId: string }
     req.user = decoded
+
+    // Set the user ID in the global context and attach to request
+    globalUserContext.setUserId(decoded.userId)
+    req.userContext = globalUserContext
+
     next()
   } catch (error) {
     if (error instanceof TokenExpiredError) {

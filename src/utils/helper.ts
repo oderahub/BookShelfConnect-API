@@ -1,10 +1,15 @@
+// setup/database.ts
 import { UserModel } from '../models/user.model'
 import { BookModel } from '../models/book.model'
+import { UserContext } from './user.context'
 
 interface DatabaseSetupConfig {
   defineSchema: boolean
-  force?: boolean // Could be used to force schema recreation in the future
+  force?: boolean
 }
+
+// Create a singleton instance of UserContext
+export const globalUserContext = new UserContext()
 
 export async function setupDatabase(config: DatabaseSetupConfig = { defineSchema: true }) {
   try {
@@ -14,7 +19,7 @@ export async function setupDatabase(config: DatabaseSetupConfig = { defineSchema
     if (config.defineSchema) {
       try {
         await userModel.defineSchema()
-        // await bookModel.defineSchema()
+        await bookModel.defineSchema()
         console.log('✅ Schema setup completed successfully')
       } catch (error) {
         if (error instanceof Error && error.message.includes('already exists')) {
@@ -26,6 +31,7 @@ export async function setupDatabase(config: DatabaseSetupConfig = { defineSchema
     }
 
     console.log('✅ Database setup completed successfully')
+    return { userModel, bookModel }
   } catch (error) {
     console.error('❌ Error setting up database:', error)
     throw error
