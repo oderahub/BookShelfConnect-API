@@ -41,4 +41,20 @@ export class UserController extends BaseController<User> {
       sendError(res, 'Internal server error', 500)
     }
   }
+
+  async logout(req: Request, res: Response): Promise<void> {
+    try {
+      // Extract token from request headers or cookies
+      const token = req.headers.authorization?.split(' ')[1] || req.cookies.token
+      const result = await (this.service as UserService).logout(token)
+      if (result.success) {
+        res.status(200).json(result)
+      } else {
+        sendError(res, result.error ?? 'Logout failed', 400)
+      }
+    } catch (error) {
+      console.error('❌ Error in logout:', error)
+      sendError(res, 'Internal server error', 500)
+    }
+  }
 }

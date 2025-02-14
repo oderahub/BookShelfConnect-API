@@ -101,4 +101,8 @@ export class UserService extends BaseService<User> {
       )
     }
   }
+
+  async logout(token: string): Promise<ApiResponse<boolean>> {
+    return ApiResponse.success(true, 'Logout successful')
+  }
 }
