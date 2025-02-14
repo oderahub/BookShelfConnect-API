@@ -1,0 +1,143 @@
+# BookShelfConnect
+
+BookShelfConnect is a robust book management system built with TypeScript, Express, and QuikDB. It provides a secure and efficient way to manage book collections with features like authentication, CRUD operations, and search functionality.
+
+## 🚀 Features
+
+- **Authentication & Authorization**
+
+  - Secure user authentication
+  - Role-based access control
+  - Protected routes with middleware
+
+- **Book Management**
+
+  - Create, read, update, and delete books
+  - Search books by title
+  - Pagination support for book listings
+  - Data validation using Zod schemas
+
+- **Architecture**
+  - Type-safe with TypeScript
+  - Modular design with base classes for models, services, and controllers
+  - Error handling and logging
+  - Clean architecture principles
+
+## 🛠 Tech Stack
+
+- TypeScript
+- Express.js
+- QuikDB (Database)
+- Zod (Validation)
+- UUID
+
+## 📦 Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/oderahub/BookShelfConnect.git
+cd BookShelfConnect
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+refer to quikdb documentation
+[https://docs.quikdb.com/]
+
+4. Start the development server:
+
+```bash
+npm run dev
+```
+
+## 🔄 API Endpoints
+
+### Books
+
+- `GET /books` - Get all books (paginated)
+- `GET /books/:id` - Get book by ID
+- `GET /books/search?title=query` - Search books by title
+- `POST /books` - Create a new book
+- `PUT /books/:id` - Update a book
+- `DELETE /books/:id` - Delete a book
+
+### Authentication
+
+- `POST /auth/login` - Login
+- `POST /auth/register` - Register new user
+-
+
+## 🔐 Authentication
+
+All protected routes require a valid JWT token in the Authorization header:
+
+```
+Authorization: Bearer <your-token>
+```
+
+## 💻 Development
+
+### Project Structure
+
+```
+src/
+├── config/         # Configuration files
+├── controllers/    # Request handlers
+├── middleware/     # Custom middleware
+├── models/         # Data models
+├── routes/         # Route definitions
+├── services/       # Business logic
+├── types/          # TypeScript types
+├── utils/          # Utility functions
+└── validations/    # Validation schemas
+```
+
+### Base Classes
+
+The project uses inheritance to maintain consistent patterns:
+
+- `BaseEntity` - Common fields for all entities
+- `BaseModel` - Database operations
+- `BaseService` - Business logic
+- `BaseController` - Request handling
+
+## 🧪 Testing
+
+Run tests with:
+
+```bash
+npm test
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- QuikDB team for the database solution
+- Express.js community
+- All contributors
+
+## 📋 Todo
+
+- [ ] Add search by multiple criteria
+- [ ] Implement user profiles
+- [ ] Add book categories/tags
+- [ ] Create admin dashboard
+- [ ] Add unit tests

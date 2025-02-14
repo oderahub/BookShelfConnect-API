@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 })
 
 // Routes
-app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/auth/users', userRoutes)
 app.use('/api/v1/books', bookRoutes) // This will now use auth middleware
 
 // 404 handler
