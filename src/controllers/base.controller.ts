@@ -28,9 +28,9 @@ export abstract class BaseController<T extends BaseEntity> {
   async findById(req: Request, res: Response): Promise<void> {
     try {
       const result = await this.service.findById(req.params.id)
-      console.log('result', req.params.id)
       if (result.success) {
         res.status(200).json(result)
+        console.log('result', result)
       } else {
         sendError(res, 'Record not found', 404)
       }

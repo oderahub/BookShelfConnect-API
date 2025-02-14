@@ -31,7 +31,8 @@ export abstract class BaseService<T extends BaseEntity> {
 
   async findById(id: string): Promise<ApiResponse<T>> {
     try {
-      const result: ResultRecords = await this.model.findById(id)
+      const result = await this.model.findById(id)
+
       if ('err' in result) {
         console.error(`❌ Error retrieving record: ${result.err}`)
         return ApiResponse.error(`Record retrieval failed: ${result.err}`)

@@ -31,7 +31,6 @@ router.get(
   validate(bookSchemas.search),
   controller.searchByTitle.bind(controller)
 )
-router.get('/:id', authMiddleware, controller.findById.bind(controller))
 
 // Protected routes with auth
 router.post('/', authMiddleware, validate(bookSchemas.create), controller.create.bind(controller))
