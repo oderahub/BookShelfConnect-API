@@ -36,7 +36,7 @@ BookShelfConnect is a robust book management system built with TypeScript, Expre
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/oderahub/BookShelfConnect.git
+git clone https://github.com/oderahub/BookShelfConnect-API.git
 cd BookShelfConnect
 ```
 
