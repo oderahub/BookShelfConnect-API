@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    env_file: .env
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - QUIKDB_USERNAME
+      - QUIKDB_EMAIL
+      - QUIKDB_PASSWORD
+      - QUIKDB_PRINCIPAL_ID
+      - QUIKDB_PROJECT_TOKEN_REF
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
+      # Mount QuikDB configuration directory
+      - quikdb_config:/root/.quikdb
+
+volumes:
+  quikdb_config:

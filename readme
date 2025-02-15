@@ -61,18 +61,22 @@ npm run dev
 
 ### Books
 
-- `GET /books` - Get all books (paginated)
-- `GET /books/:id` - Get book by ID
-- `GET /books/search?title=query` - Search books by title
-- `POST /books` - Create a new book
-- `PUT /books/:id` - Update a book
-- `DELETE /books/:id` - Delete a book
+- `GET api/v1/books` - Get all books (paginated)
+- `GET api/v1/books/:id` - Get book by ID
+- `GET api/v1/books/search?title=query` - Search books by title
+- `POST api/v1/books` - Create a new book
+- `PUT api/v1/books/:id` - Update a book
+- `DELETE api/v1/books/:id` - Delete a book
 
 ### Authentication
 
-- `POST /auth/login` - Login
-- `POST /auth/register` - Register new user
+- `POST api/v1/auth/login` - Login
+- `POST api/v1/auth/register` - Register new user
 -
+
+## Users
+
+- `GET  `
 
 ## 🔐 Authentication
 
