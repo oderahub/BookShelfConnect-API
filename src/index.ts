@@ -7,7 +7,7 @@ import 'express-async-errors'
 import userRoutes from './routes/user.routes'
 import bookRoutes from './routes/book.routes'
 import { setupDatabase } from './utils/helper'
-import { globalUserContext } from './middleware/auth.middleware'
+import { rateLimiter } from './middleware/rateLimiter'
 
 dotenv.config()
 
@@ -35,6 +35,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'QuikDb Capstone Project' })
 })
 
+// Rate Limiter
+app.use(rateLimiter)
 // Routes
 app.use('/api/v1/auth/users', userRoutes)
 app.use('/api/v1/books', bookRoutes) // This will now use auth middleware
