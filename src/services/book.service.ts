@@ -2,6 +2,7 @@ import { BookModel } from '../models/book.model'
 import { BaseService } from './base.service'
 import { Book } from '../types'
 import { ApiResponse } from '../utils/response'
+import { logger } from '../utils/logger'
 
 export class BookService extends BaseService<Book> {
   private bookModel: BookModel
@@ -22,7 +23,7 @@ export class BookService extends BaseService<Book> {
 
       return ApiResponse.error('No books found')
     } catch (error) {
-      console.error('❌ Service error during findByTitle:', error)
+      logger.error('❌ Service error during findByTitle:', error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
@@ -39,7 +40,7 @@ export class BookService extends BaseService<Book> {
 
       return ApiResponse.error('No books found')
     } catch (error) {
-      console.error('❌ Service error during findByOwnerId:', error)
+      logger.error('❌ Service error during findByOwnerId:', error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )

@@ -2,6 +2,7 @@
 import { UserModel } from '../models/user.model'
 import { BookModel } from '../models/book.model'
 import { UserContext } from './user.context'
+import { logger } from '../utils/logger'
 
 interface DatabaseSetupConfig {
   defineSchema: boolean
@@ -30,10 +31,10 @@ export async function setupDatabase(config: DatabaseSetupConfig = { defineSchema
       }
     }
 
-    console.log('✅ Database setup completed successfully')
+    logger.info('✅ Database setup completed successfully')
     return { userModel, bookModel }
   } catch (error) {
-    console.error('❌ Error setting up database:', error)
+    logger.error('❌ Error setting up database:', error)
     throw error
   }
 }

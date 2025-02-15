@@ -1,6 +1,7 @@
 import { User } from '../types/index'
 import { CanisterMethod, ResultBool, ResultRecords } from 'quikdb-cli-beta/v1/sdk'
 import { BaseModel } from './base.model'
+import { logger } from '../utils/logger'
 
 export class UserModel extends BaseModel<User> {
   protected schemaName = 'UserSchema'
@@ -21,7 +22,7 @@ export class UserModel extends BaseModel<User> {
         Array.isArray(existingSchemas.ok) &&
         existingSchemas.ok.includes(this.schemaName)
       ) {
-        console.log('✅ Schema already exists, skipping creation')
+        logger.info('✅ Schema already exists, skipping creation')
         return
       }
 
@@ -43,9 +44,9 @@ export class UserModel extends BaseModel<User> {
       //   throw new Error(`Failed to create schema: ${result.err}`)
       // }
 
-      console.log('✅ Schema defined successfully')
+      logger.info('✅ Schema defined successfully')
     } catch (error) {
-      console.error('❌ Failed to define schema:', error)
+      logger.error('❌ Failed to define schema:', error)
       throw error
     }
   }

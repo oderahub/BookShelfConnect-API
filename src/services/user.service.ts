@@ -5,6 +5,7 @@ import { hash, compare } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import { ApiResponse } from '../utils/response'
 import dotenv from 'dotenv'
+import { logger } from '../utils/logger'
 
 dotenv.config()
 
@@ -22,15 +23,12 @@ export class UserService extends BaseService<User> {
       }
 
       const hashedPassword = await hash(userData.password, 10)
-      console.log('Hashed password created:', !!hashedPassword)
 
       const result = await this.create({
         ...userData,
         password: hashedPassword,
         role: 'USER'
       })
-
-      console.log('User creation result:', JSON.stringify(result, null, 2))
 
       if (result.success && result.data) {
         const token = sign({ userId: result.data.id }, process.env.JWT_SECRET!, {
@@ -41,7 +39,7 @@ export class UserService extends BaseService<User> {
 
       return ApiResponse.error('Registration failed')
     } catch (error) {
-      console.error('❌ Service error during register:', error)
+      logger.error('❌ Service error during register:', error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
@@ -77,7 +75,7 @@ export class UserService extends BaseService<User> {
 
       // Verify we have the required fields
       if (!user.password) {
-        console.error('Missing password in user data')
+        logger.error('Missing password in user data')
         return ApiResponse.error('Invalid user data')
       }
 
@@ -95,7 +93,7 @@ export class UserService extends BaseService<User> {
       const token = sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '24h' })
       return ApiResponse.success({ token }, 'Login successful')
     } catch (error) {
-      console.error('❌ Service error during login:', error)
+      logger.error('❌ Service error during login:', error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )

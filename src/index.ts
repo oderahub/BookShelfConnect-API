@@ -8,6 +8,7 @@ import userRoutes from './routes/user.routes'
 import bookRoutes from './routes/book.routes'
 import { setupDatabase } from './utils/helper'
 import { rateLimiter } from './middleware/rateLimiter'
+import { logger } from './utils/logger'
 
 dotenv.config()
 
@@ -48,34 +49,34 @@ app.use((req, res) => {
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack)
+  logger.error(err.stack)
   res.status(500).json({ success: false, error: 'Internal Server Error' })
 })
 
 // Initialize QuikDB and Start Server
 const startServer = async () => {
   try {
-    console.log('🚀 Initializing QuikDB...')
+    logger.info('🚀 Initializing QuikDB...')
 
     const instance = await Database.getInstance()
     await instance.init()
 
     await Database.initOwner(instance)
 
-    console.log('✅ QuikDB Initialized Successfully')
+    logger.info('✅ QuikDB Initialized Successfully')
 
     // Pass the global user context to setupDatabase
     await setupDatabase({ defineSchema: true })
 
     const server = app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`)
+      logger.info(`🚀 Server is running on port ${PORT}`)
     })
 
     // Graceful Shutdown
     const shutdown = () => {
-      console.log('🛑 Shutting down server...')
+      logger.info('🛑 Shutting down server...')
       server.close(() => {
-        console.log('✅ Server closed. Cleaning up resources...')
+        logger.info('✅ Server closed. Cleaning up resources...')
         process.exit(0)
       })
     }
@@ -83,7 +84,7 @@ const startServer = async () => {
     process.on('SIGINT', shutdown)
     process.on('SIGTERM', shutdown)
   } catch (error) {
-    console.error('❌ Error initializing QuikDB:', error)
+    logger.error('❌ Error initializing QuikDB:', error)
     process.exit(1)
   }
 }

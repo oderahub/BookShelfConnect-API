@@ -4,6 +4,7 @@ import { BaseController } from './base.controller'
 import { Book } from '../types'
 import { AuthRequest } from '../middleware/auth.middleware'
 import { sendError } from '../constants/error'
+import { logger } from '../utils/logger'
 
 export class BookController extends BaseController<Book> {
   constructor() {
@@ -28,7 +29,7 @@ export class BookController extends BaseController<Book> {
         sendError(res, result.error ?? 'Book creation failed', 400)
       }
     } catch (error) {
-      console.error('❌ Error in create:', error)
+      logger.error('❌ Error in create:', error)
       sendError(res, 'Internal server error', 500)
     }
   }
@@ -47,7 +48,7 @@ export class BookController extends BaseController<Book> {
         sendError(res, 'No books found', 404)
       }
     } catch (error) {
-      console.error('❌ Error in searchByTitle:', error)
+      logger.error('❌ Error in searchByTitle:', error)
       sendError(res, 'Internal server error', 500)
     }
   }

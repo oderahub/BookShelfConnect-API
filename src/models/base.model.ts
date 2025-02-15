@@ -3,19 +3,14 @@ import {
   CanisterMethod,
   ResultBool,
   ResultRecords,
-  DBRecord,
-  CreateSchemaArgs,
-  CreateRecordDataArgs,
   GetRecordArgs,
   UpdateDataArgs,
-  DeleteDataArgs,
-  SearchByIndexArgs,
-  SearchByMultipleFieldsArgs
+  DeleteDataArgs
 } from 'quikdb-cli-beta/v1/sdk'
 import { Database } from '../config/db'
 import { BaseEntity } from '../types/index'
 import { v4 as uuidv4 } from 'uuid'
-import { record } from 'zod'
+import { logger } from '../utils/logger'
 
 export abstract class BaseModel<T extends BaseEntity> {
   protected db!: QuikDB
@@ -28,9 +23,9 @@ export abstract class BaseModel<T extends BaseEntity> {
   public async initializeDB(): Promise<void> {
     try {
       this.db = await Database.getInstance()
-      console.log('Database initialized successfully!')
+      logger.info('Database initialized successfully!')
     } catch (error) {
-      console.error(`❌ Failed to initialize database:`, error)
+      logger.error(`❌ Failed to initialize database:`, error)
       throw new Error('Database initialization failed')
     }
   }
@@ -42,16 +37,6 @@ export abstract class BaseModel<T extends BaseEntity> {
     }
     // Here you would define what 'defineSchema' means for this base model if needed
   }
-
-  // protected async createSchema(): Promise<void> {
-  //   try {
-  //     const args: CreateSchemaArgs = [this.schemaName, this.fields, this.indexes]
-  //     await this.db.callCanisterMethod(CanisterMethod.CreateSchema, args)
-  //   } catch (error) {
-  //     console.error(`❌ Failed to create schema:`, error)
-  //     throw new Error('Schema creation failed')
-  //   }
-  // }
 
   async create(data: Omit<T, 'id'>): Promise<ResultBool> {
     if (!this.db) {
@@ -66,7 +51,7 @@ export abstract class BaseModel<T extends BaseEntity> {
           updatedAt: new Date().toString()
         })
       }
-      console.log(`Creating record with ID: ${record.id}`)
+      logger.info(`Creating record with ID: ${record.id}`)
       const args = [this.schemaName, record]
       if (!data || Object.keys(data).length === 0) {
         throw new Error('Data cannot be empty')
@@ -74,7 +59,7 @@ export abstract class BaseModel<T extends BaseEntity> {
 
       return await this.db.callCanisterMethod<ResultBool>(CanisterMethod.CreateRecordData, args)
     } catch (error) {
-      console.error(`❌ Error creating record:`, error)
+      logger.error(`❌ Error creating record:`, error)
       throw new Error('Record creation failed')
     }
   }
@@ -90,12 +75,12 @@ export abstract class BaseModel<T extends BaseEntity> {
         getRecordArgs
       )
       if ('err' in result) {
-        console.error(`❌ Error finding record by ID: ${result.err}`)
+        logger.error(`❌ Error finding record by ID: ${result.err}`)
         throw new Error(`Record retrieval failed: ${result.err}`)
       }
       return result
     } catch (error) {
-      console.error(`❌ Error finding record by ID:`, error)
+      logger.error(`❌ Error finding record by ID:`, error)
       throw new Error('Record retrieval failed')
     }
   }
@@ -145,12 +130,12 @@ export abstract class BaseModel<T extends BaseEntity> {
       ]
       const result = await this.db.callCanisterMethod<ResultBool>(CanisterMethod.UpdateData, args)
       if ('err' in result) {
-        console.error(`❌ Error updating record: ${result.err}`)
+        logger.error(`❌ Error updating record: ${result.err}`)
         throw new Error(`Update failed: ${result.err}`)
       }
       return result
     } catch (error) {
-      console.error(`❌ Error updating record:`, error)
+      logger.error(`❌ Error updating record:`, error)
       throw new Error('Record update failed')
     }
   }
@@ -163,7 +148,7 @@ export abstract class BaseModel<T extends BaseEntity> {
       const args: DeleteDataArgs = [this.schemaName, id]
       return await this.db.callCanisterMethod<ResultBool>(CanisterMethod.DeleteRecord, args)
     } catch (error) {
-      console.error(`❌ Error deleting record:`, error)
+      logger.error(`❌ Error deleting record:`, error)
       throw new Error('Record deletion failed')
     }
   }
@@ -176,21 +161,21 @@ export abstract class BaseModel<T extends BaseEntity> {
       const args = [this.schemaName, String(field), value]
       return await this.db.callCanisterMethod<ResultRecords>(CanisterMethod.SearchByIndex, args)
     } catch (error) {
-      console.error(`❌ Error searching records:`, error)
+      logger.error(`❌ Error searching records:`, error)
       throw new Error('Search operation failed')
     }
   }
 
-  async searchByMultipleFields(criteria: [keyof T, string][]): Promise<ResultRecords> {
-    try {
-      const args: SearchByMultipleFieldsArgs = [this.schemaName, criteria as [string, string][]]
-      return await this.db.callCanisterMethod<ResultRecords>(
-        CanisterMethod.SearchByMultipleFields,
-        args
-      )
-    } catch (error) {
-      console.error(`❌ Error searching by multiple fields:`, error)
-      throw new Error('Search operation failed')
-    }
-  }
+  // async searchByMultipleFields(criteria: [keyof T, string][]): Promise<ResultRecords> {
+  //   try {
+  //     const args: SearchByMultipleFieldsArgs = [this.schemaName, criteria as [string, string][]]
+  //     return await this.db.callCanisterMethod<ResultRecords>(
+  //       CanisterMethod.SearchByMultipleFields,
+  //       args
+  //     )
+  //   } catch (error) {
+  //     console.error(`❌ Error searching by multiple fields:`, error)
+  //     throw new Error('Search operation failed')
+  //   }
+  // }
 }

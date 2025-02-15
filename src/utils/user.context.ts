@@ -1,5 +1,3 @@
-// context/user.context.ts
-
 export class UserContext {
   private userId: string | null = null
 

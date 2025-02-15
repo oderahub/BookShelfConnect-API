@@ -2,6 +2,7 @@ import { BaseModel } from '../models/base.model'
 import { BaseEntity } from '../types'
 import { ApiResponse } from '../utils/response'
 import { ResultBool, ResultRecords } from 'quikdb-cli-beta/v1/sdk'
+import { logger } from '../utils/logger'
 
 export abstract class BaseService<T extends BaseEntity> {
   protected model: BaseModel<T>
@@ -18,11 +19,11 @@ export abstract class BaseService<T extends BaseEntity> {
         const createdEntity = { ...data, id: (result as any).id } as T
         return ApiResponse.success(createdEntity, 'Created successfully')
       } else {
-        console.error(`❌ Create operation failed:`, result)
+        logger.error(`❌ Create operation failed:`, result)
         return ApiResponse.error('Creation failed')
       }
     } catch (error) {
-      console.error(`❌ Service error during create:`, error)
+      logger.error(`❌ Service error during create:`, error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
@@ -34,7 +35,7 @@ export abstract class BaseService<T extends BaseEntity> {
       const result = await this.model.findById(id)
 
       if ('err' in result) {
-        console.error(`❌ Error retrieving record: ${result.err}`)
+        logger.error(`❌ Error retrieving record: ${result.err}`)
         return ApiResponse.error(`Record retrieval failed: ${result.err}`)
       }
       if ('ok' in result && Array.isArray(result.ok) && result.ok.length > 0) {
@@ -42,7 +43,7 @@ export abstract class BaseService<T extends BaseEntity> {
       }
       return ApiResponse.error('Record not found')
     } catch (error) {
-      console.error(`❌ Service error during findById:`, error)
+      logger.error(`❌ Service error during findById:`, error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
@@ -56,11 +57,11 @@ export abstract class BaseService<T extends BaseEntity> {
       if ('ok' in result && Array.isArray(result.ok)) {
         return ApiResponse.success(result.ok as unknown as T[])
       } else {
-        console.error(`❌ No records found`)
+        logger.error(`❌ No records found`)
         return ApiResponse.error('No records found')
       }
     } catch (error) {
-      console.error(`❌ Service error during findAll:`, error)
+      logger.error(`❌ Service error during findAll:`, error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
@@ -74,11 +75,11 @@ export abstract class BaseService<T extends BaseEntity> {
       if ('ok' in result && result.ok === true) {
         return ApiResponse.success(true, 'Updated successfully')
       } else {
-        console.error(`❌ Update operation failed:`, result)
+        logger.error(`❌ Update operation failed:`, result)
         return ApiResponse.error('Update failed')
       }
     } catch (error) {
-      console.error(`❌ Service error during update:`, error)
+      logger.error(`❌ Service error during update:`, error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )
@@ -92,11 +93,10 @@ export abstract class BaseService<T extends BaseEntity> {
       if ('ok' in result && result.ok === true) {
         return ApiResponse.success(true, 'Deleted successfully')
       } else {
-        console.error(`❌ Deletion operation failed:`, result)
         return ApiResponse.error('Deletion failed')
       }
     } catch (error) {
-      console.error(`❌ Service error during delete:`, error)
+      logger.error(`❌ Service error during delete:`, error)
       return ApiResponse.error(
         `Service error: ${error instanceof Error ? error.message : 'Unknown error'}`
       )

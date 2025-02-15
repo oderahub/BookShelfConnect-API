@@ -3,6 +3,7 @@ import { UserService } from '../services/user.service'
 import { BaseController } from './base.controller'
 import { User } from '../types'
 import { sendError } from '../constants/error'
+import { logger } from '../utils/logger'
 
 export class UserController extends BaseController<User> {
   constructor() {
@@ -18,7 +19,7 @@ export class UserController extends BaseController<User> {
         sendError(res, result.error ?? 'Registration failed', 400)
       }
     } catch (error) {
-      console.error('❌ Error in register:', error)
+      logger.error('❌ Error in register:', error)
       sendError(res, 'Internal server error', 500)
     }
   }
@@ -37,7 +38,7 @@ export class UserController extends BaseController<User> {
         sendError(res, 'Invalid credentials', 401)
       }
     } catch (error) {
-      console.error('❌ Error in login:', error)
+      logger.error('❌ Error in login:', error)
       sendError(res, 'Internal server error', 500)
     }
   }
