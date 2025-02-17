@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -7,21 +5,49 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
+      - '4943:4943'
     env_file: .env
     environment:
-      - NODE_ENV=${NODE_ENV}
+      - NODE_ENV=development
       - QUIKDB_USERNAME
       - QUIKDB_EMAIL
       - QUIKDB_PASSWORD
       - QUIKDB_PRINCIPAL_ID
       - QUIKDB_PROJECT_TOKEN_REF
+      - DFX_NETWORK=local
+      - RUST_BACKTRACE=1
+      - DFX_BIND_ADDRESS=0.0.0.0:4943
     volumes:
-      - ./src:/usr/src/app/src
-      - ./package.json:/usr/src/app/package.json
-      - ./package-lock.json:/usr/src/app/package-lock.json
-      - ./tsconfig.json:/usr/src/app/tsconfig.json
-      # Mount QuikDB configuration directory
+      - .:/usr/src/app
       - quikdb_config:/root/.quikdb
+      - dfx_config:/root/.config/dfx
+      - dfx-data:/root/.dfx
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'bash',
+          '-c',
+          'curl -f http://127.0.0.1:4943/_/raw || curl -f http://0.0.0.0:4943/_/raw'
+        ]
+      interval: 10s # Reduced interval
+      timeout: 5s # Reduced timeout
+      retries: 5 # Increased retries
+      start_period: 30s # Increased start period
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - quikdb_network
 
+networks:
+  quikdb_network:
+    driver: bridge
 volumes:
   quikdb_config:
+    driver: local
+  dfx_config:
+    driver: local
+  dfx-data:
+    driver: local
