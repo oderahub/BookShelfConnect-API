@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     ports:
       - '3000:3000'
       - '4943:4943'
@@ -16,6 +17,7 @@ services:
       - QUIKDB_PROJECT_TOKEN_REF
       - DFX_NETWORK=local
       - RUST_BACKTRACE=1
+      - DFX_DEBUG=1
       - DFX_BIND_ADDRESS=0.0.0.0:4943
     volumes:
       - .:/usr/src/app
@@ -27,23 +29,17 @@ services:
     healthcheck:
       test:
         [
-          'CMD',
-          'bash',
-          '-c',
-          'curl -f http://127.0.0.1:4943/_/raw || curl -f http://0.0.0.0:4943/_/raw'
+          'CMD-SHELL',
+          'curl -sf http://localhost:4943/_/raw || curl -sf http://0.0.0.0:4943/_/raw || exit 1'
         ]
-      interval: 10s # Reduced interval
-      timeout: 5s # Reduced timeout
-      retries: 5 # Increased retries
-      start_period: 30s # Increased start period
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - quikdb_network
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    command: sh -c "./init-quikdb.sh"
+    restart: unless-stopped
+    network_mode: 'host'
 
-networks:
-  quikdb_network:
-    driver: bridge
 volumes:
   quikdb_config:
     driver: local

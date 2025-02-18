@@ -18,6 +18,8 @@ RUN apt-get update && \
     iproute2 \
     procps \
     lsof \
+    iputils-ping \
+    telnet \
     && rm -rf /var/lib/apt/lists/*
 
 # Install DFX (DFINITY SDK)
@@ -64,7 +66,7 @@ EXPOSE 3000 4943
 
 # Add healthcheck with improved parameters
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
-    CMD curl -f http://127.0.0.1:4943/_/raw || curl -f http://0.0.0.0:4943/_/raw || exit 1
+    CMD curl -sf http://127.0.0.1:4943/_/raw || curl -sf http://0.0.0.0:4943/_/raw || exit 1
 
 # Use init script as entrypoint
 ENTRYPOINT ["/usr/src/app/init-quikdb.sh"]

@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "node dist/index.js",
-    "test": "test",
+    "build": "tsc && dfx generate",
     "dev": "tsx src/index.ts"
   },
   "author": "chidera okere",
