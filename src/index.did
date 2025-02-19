@@ -1,0 +1,68 @@
+type User = record {
+    id: text;
+    username: text;
+    email: text;
+    password: text;
+    created_at: text;
+    updated_at: text;
+};
+
+type Book = record {
+    id: text;
+    title: text;
+    author: text;
+    isbn: text;
+    description: text;
+    created_at: text;
+    updated_at: text;
+};
+
+type AuthResponse = record {
+    token: text;
+    user: User;
+};
+
+type Error = record {
+    success: bool;
+    error: text;
+};
+
+service : {
+    // Health Check
+    healthCheck: () -> (record { message: text }) query;
+
+    // User Routes
+    registerUser: (record {
+        username: text;
+        email: text;
+        password: text;
+    }) -> (variant { Ok: AuthResponse; Err: Error });
+
+    loginUser: (record {
+        email: text;
+        password: text;
+    }) -> (variant { Ok: AuthResponse; Err: Error });
+
+    // Book Routes
+    createBook: (Book) -> (variant { Ok: Book; Err: Error });
+    
+    getBook: (text) -> (variant { 
+        Ok: Book;
+        Err: Error;
+    }) query;
+
+    listBooks: () -> (variant {
+        Ok: vec Book;
+        Err: Error;
+    }) query;
+
+    updateBook: (text, Book) -> (variant {
+        Ok: Book;
+        Err: Error;
+    });
+
+    deleteBook: (text) -> (variant {
+        Ok: record { success: bool };
+        Err: Error;
+    });
+}
