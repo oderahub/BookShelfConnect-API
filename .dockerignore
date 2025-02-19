@@ -8,7 +8,6 @@ npm-debug.log
 *.md
 .DS_Store
 .vscode
-coverage
 .nyc_output
 dist
 build
@@ -17,7 +16,6 @@ docker-compose*
 Dockerfile*
 README.md
 LICENSE
-.quikdb
 .github
 tests
 __tests__
