@@ -8,9 +8,47 @@ log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] [${level}] ${message}"
 }
 
-# Function to check if dfx is running
+# Enhanced DFX status check function
 check_dfx_running() {
-    curl --output /dev/null --silent --fail http://0.0.0.0:4943/_/raw || curl --output /dev/null --silent --fail http://127.0.0.1:4943/_/raw
+    local max_wait=30
+    local count=0
+    
+    while [ $count -lt $max_wait ]; do
+        # Check all required processes
+        if ! pgrep -f "dfx start" > /dev/null; then
+            log "DEBUG" "DFX process not running"
+            sleep 2
+            count=$((count + 1))
+            continue
+        fi
+        
+        if ! pgrep -f "replica" > /dev/null; then
+            log "DEBUG" "Replica process not running"
+            sleep 2
+            count=$((count + 1))
+            continue
+        fi
+        
+        # Check port bindings
+        if ! netstat -tulpn | grep -q ":4943.*LISTEN"; then
+            log "DEBUG" "Port 4943 not listening"
+            sleep 2
+            count=$((count + 1))
+            continue
+        fi
+        
+        # Try the actual DFX endpoint
+        if curl -sf "http://127.0.0.1:4943/_/raw" > /dev/null 2>&1; then
+            log "INFO" "DFX is running and responding"
+            return 0
+        fi
+        
+        log "DEBUG" "Waiting for DFX endpoint to respond..."
+        sleep 2
+        count=$((count + 1))
+    done
+    
+    return 1
 }
 
 # Validate environment variables
@@ -29,10 +67,11 @@ log "INFO" "Cleaning up existing DFX processes..."
 pkill -f "dfx start" || true
 pkill -f "replica" || true
 pkill -f "ic-starter" || true
-lsof -ti:4943 | xargs kill -9 || true  # Kill any process using port 4943
+pkill -f "icx-proxy" || true
+lsof -ti:4943 | xargs kill -9 || true
 rm -rf /root/.dfx/network-data || true
 rm -rf .dfx || true
-sleep 5  # Ensure processes are cleaned up
+sleep 5
 
 # Set up DFX configuration directory
 log "INFO" "Setting up DFX configuration..."
@@ -66,28 +105,21 @@ if [ ! -f "/root/.config/dfx/identity/default/identity.pem" ]; then
 fi
 dfx identity use default
 
-# Check if port is already in use
+# Check port availability
 if lsof -i:4943 > /dev/null 2>&1; then
     log "ERROR" "Port 4943 is already in use"
     lsof -i:4943
     exit 1
 fi
 
-# Start dfx in the background with error handling
+# Start dfx with debug mode and wait for full initialization
 log "INFO" "Starting dfx..."
-if ! DFX_BIND_ADDRESS="0.0.0.0:4943" dfx start --clean --background; then
-    log "ERROR" "Failed to start DFX"
-    exit 1
-fi
+export DFX_DEBUG=1
+DFX_BIND_ADDRESS="0.0.0.0:4943" dfx start --clean --background
 
-# Verify network binding and status
-log "INFO" "Verifying network binding..."
-sleep 5  # Give more time for network binding
-netstat -tulpn | grep 4943 || true
-
-log "INFO" "Checking network status..."
-ip addr show
-netstat -tulpn | grep LISTEN || true
+# Initial delay to allow processes to start
+log "INFO" "Waiting for initial process startup..."
+sleep 15
 
 # Wait for DFX to be ready
 log "INFO" "Waiting for DFX to be ready..."
@@ -97,13 +129,17 @@ RETRY_COUNT=0
 while ! check_dfx_running; do
     if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
         log "ERROR" "DFX failed to start after $MAX_RETRIES attempts"
-        ps aux | grep dfx
-        netstat -tulpn | grep LISTEN || true
+        log "DEBUG" "Process status:"
+        ps aux | grep -E "dfx|replica|icx-proxy" | grep -v grep
+        log "DEBUG" "Network status:"
+        netstat -tulpn
+        log "DEBUG" "DFX logs:"
+        find /root/.dfx -name "*.log" -exec cat {} \;
         exit 1
     fi
     RETRY_COUNT=$((RETRY_COUNT + 1))
     log "INFO" "Waiting for DFX to start... (attempt $RETRY_COUNT/$MAX_RETRIES)"
-    sleep 2
+    sleep 5
 done
 
 log "INFO" "DFX is ready!"

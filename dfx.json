@@ -1,0 +1,16 @@
+{
+  "canisters": {},
+  "defaults": {
+    "build": {
+      "packtool": "",
+      "args": ""
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "0.0.0.0:4943",
+      "type": "ephemeral"
+    }
+  },
+  "version": 1
+}
