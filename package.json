@@ -6,14 +6,13 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc && dfx generate",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "test": "jest"
   },
   "author": "chidera okere",
   "license": "ISC",
   "dependencies": {
-    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.8",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -23,12 +22,24 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "quikdb-cli-beta": "^4.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.5",
     "winston": "^3.17.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
+    "jest": "^29.7.0",
+    "jest-mock": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }

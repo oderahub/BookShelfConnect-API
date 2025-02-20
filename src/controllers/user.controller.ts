@@ -10,6 +10,39 @@ export class UserController extends BaseController<User> {
     super(new UserService())
   }
 
+  /**
+   * @openapi
+   * /users/register:
+   *   post:
+   *     summary: Register a new user
+   *     tags: [Users]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/User'
+   *     responses:
+   *       201:
+   *         description: User registered
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success: { type: 'boolean' }
+   *                 data: {
+   *                   type: 'object',
+   *                   properties: {
+   *                     token: { type: 'string' }
+   *                   }
+   *                 }
+   *       400:
+   *         description: Bad request
+   *       500:
+   *         description: Internal server error
+   */
+
   async register(req: Request, res: Response): Promise<void> {
     try {
       const result = await (this.service as UserService).register(req.body)
@@ -23,6 +56,45 @@ export class UserController extends BaseController<User> {
       sendError(res, 'Internal server error', 500)
     }
   }
+
+  /**
+   * @openapi
+   * /users/login:
+   *   post:
+   *     summary: User login
+   *     tags: [Users]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               email: { type: 'string' }
+   *               password: { type: 'string' }
+   *             required: ['email', 'password']
+   *     responses:
+   *       200:
+   *         description: Login successful
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success: { type: 'boolean' }
+   *                 data: {
+   *                   type: 'object',
+   *                   properties: {
+   *                     token: { type: 'string' }
+   *                   }
+   *                 }
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Invalid credentials
+   *       500:
+   *         description: Internal server error
+   */
 
   async login(req: Request, res: Response): Promise<void> {
     try {
@@ -42,6 +114,31 @@ export class UserController extends BaseController<User> {
       sendError(res, 'Internal server error', 500)
     }
   }
+  /**
+   * @openapi
+   * /users/logout:
+   *   post:
+   *     summary: User logout
+   *     tags: [Users]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Logout successful
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success: { type: 'boolean' }
+   *                 data: { type: 'boolean' }
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       500:
+   *         description: Internal server error
+   */
 
   async logout(req: Request, res: Response): Promise<void> {
     try {

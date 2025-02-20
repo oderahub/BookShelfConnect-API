@@ -3,3 +3,8 @@ dist/
 logs
 .env
 build-context.tar
+.dfx
+.quikdb
+config
+.dockerignore
+.dockerenv

@@ -11,6 +11,39 @@ export class BookController extends BaseController<Book> {
     super(new BookService())
   }
 
+  /**
+   * @openapi
+   * /books:
+   *   post:
+   *     summary: Create a new book
+   *     tags: [Books]
+   *     security:
+   *       - bearerAuth: []
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/Book'
+   *     responses:
+   *       201:
+   *         description: Book created successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success: { type: 'boolean' }
+   *                 data: { $ref: '#/components/schemas/Book' }
+   *                 message: { type: 'string' }
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       500:
+   *         description: Internal server error
+   */
+
   async create(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user?.userId) {
@@ -34,6 +67,40 @@ export class BookController extends BaseController<Book> {
     }
   }
 
+  /**
+   * @openapi
+   * /books/search:
+   *   get:
+   *     summary: Search books by title
+   *     tags: [Books]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: query
+   *         name: title
+   *         required: true
+   *         schema:
+   *           type: string
+   *     responses:
+   *       200:
+   *         description: Books found
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success: { type: 'boolean' }
+   *                 data: { type: 'array', items: { $ref: '#/components/schemas/Book' } }
+   *       400:
+   *         description: Bad request
+   *       401:
+   *         description: Unauthorized
+   *       404:
+   *         description: No books found
+   *       500:
+   *         description: Internal server error
+   */
+
   async searchByTitle(req: Request, res: Response): Promise<void> {
     try {
       const title = req.query.title as string
@@ -52,4 +119,6 @@ export class BookController extends BaseController<Book> {
       sendError(res, 'Internal server error', 500)
     }
   }
+
+  //
 }
