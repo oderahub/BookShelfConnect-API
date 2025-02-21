@@ -1,125 +1,141 @@
-# BookShelfConnect
+# 📚 BookShelfConnect
 
-BookShelfConnect is a powerful book management system built with TypeScript, Express, and QuikDB. It offers a secure and efficient platform to manage book collections, featuring user authentication, CRUD operations, search capabilities, and a new book review/rating system.
+**BookShelfConnect** is a powerful book management system built with **TypeScript**, **Express**, and **QuikDB**. It offers a secure and efficient platform to manage book collections, featuring user authentication, CRUD operations, search capabilities, and a book review/rating system.
+
+---
 
 ## 🚀 Features
 
-### Authentication & Authorization
+### 🔐 Authentication & Authorization
 
-- Secure user registration and login with JWT
-- Role-based access control
+- Secure user registration and login with **JWT**
+- **Role-based access control** for different user permissions
 - Protected routes via authentication middleware
 
-### Book Management
+### 📖 Book Management
 
-- Create, read, update, and delete books
-- Search books by title
-- Paginated book listings
-- Data validation with Zod schemas
+- **CRUD operations**: Create, Read, Update, and Delete books
+- **Search books by title**
+- **Paginated book listings** for optimized performance
+- **Data validation** with **Zod schemas**
 
-### Book Reviews & Ratings (New!)
+### ⭐ Book Reviews & Ratings _(New!)_
 
-- Add reviews and ratings (1-5 scale) for books
+- Add **reviews** and **ratings** (1-5 scale) for books
 - Retrieve reviews for a specific book
-- Automatically update book average rating and review count
+- Automatically update book **average rating** and **review count**
 
-### Architecture
+---
 
-- Type-safe with TypeScript
-- Modular design with extensible base classes (BaseModel, BaseService, BaseController)
-- Comprehensive error handling and logging
-- Adheres to clean architecture principles
+## 🏗 Architecture
+
+- **Type-safe** with **TypeScript**
+- **Modular design** with extensible base classes:
+  - `BaseModel`, `BaseService`, `BaseController`
+- **Comprehensive error handling** and logging
+- **Adheres to clean architecture principles**
+
+---
 
 ## 🛠 Tech Stack
 
-- TypeScript: Type-safe JavaScript
-- Express.js: Web framework
-- QuikDB: High-performance database
-- Zod: Schema validation
-- UUID: Unique identifier generation
-- JWT: Token-based authentication
-- Swagger: API documentation and testing
+| Technology     | Purpose                       |
+| -------------- | ----------------------------- |
+| **TypeScript** | Type-safe JavaScript          |
+| **Express.js** | Web framework                 |
+| **QuikDB**     | High-performance database     |
+| **Zod**        | Schema validation             |
+| **UUID**       | Unique identifier generation  |
+| **JWT**        | Token-based authentication    |
+| **Swagger**    | API documentation and testing |
+
+---
 
 ## 📦 Installation
 
-### Clone the Repository:
+### 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/oderahub/BookShelfConnect-API.git
 cd BookShelfConnect
 ```
 
-### Install Dependencies:
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
 ```
 
-### Set Up Environment Variables:
+### 3️⃣ Set Up Environment Variables
 
-1. Create a `.env` file in the root directory
-2. Refer to the QuikDB documentation for configuration details
+Create a `.env` file in the root directory.
 
-Example `.env`:
+#### Example `.env` file:
 
-```
+```bash
 PORT=3000
 JWT_SECRET=your-secret-key
 QUIKDB_API_KEY=your-quikdb-api-key
 ```
 
-### Start the Development Server:
+### 4️⃣ Start the Development Server
 
 ```bash
 npm run dev
 ```
 
-### Access Swagger UI:
+### 5️⃣ Access Swagger UI
 
-Navigate to `http://localhost:3000/api-docs` for API documentation and testing.
+Navigate to: [http://localhost:3000/api-docs](http://localhost:3000/api-docs) for API documentation and testing.
+
+---
 
 ## 🔄 API Endpoints
 
-### Authentication
+### **Authentication**
 
-| Method | Endpoint                 | Description         | Request Body Example                                                                                   | Requires Auth |
-| ------ | ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
-| POST   | `/api/v1/users/register` | Register a new user | `{"firstName": "John", "lastName": "Doe", "email": "john.doe@example.com", "password": "password123"}` | No            |
-| POST   | `/api/v1/users/login`    | User login          | `{"email": "john.doe@example.com", "password": "password123"}`                                         | No            |
-| POST   | `/api/v1/users/logout`   | User logout         | None                                                                                                   | Yes           |
+| Method | Endpoint                 | Description         | Request Body Example                                                                                     | Requires Auth? |
+| ------ | ------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
+| `POST` | `/api/v1/users/register` | Register a new user | `{ "firstName": "John", "lastName": "Doe", "email": "john.doe@example.com", "password": "password123" }` | ❌ No          |
+| `POST` | `/api/v1/users/login`    | User login          | `{ "email": "john.doe@example.com", "password": "password123" }`                                         | ❌ No          |
+| `POST` | `/api/v1/users/logout`   | User logout         | None                                                                                                     | ✅ Yes         |
 
-### Books
+### **Books**
 
-| Method | Endpoint               | Description               | Query Params / Request Body Example                                                                                          | Requires Auth |
-| ------ | ---------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| GET    | `/api/v1/books`        | Get all books (paginated) | `?page=1&limit=10`                                                                                                           | Yes           |
-| GET    | `/api/v1/books/:id`    | Get book by ID            | None (Path: `:id`)                                                                                                           | Yes           |
-| GET    | `/api/v1/books/search` | Search books by title     | `?title=Gatsby`                                                                                                              | Yes           |
-| POST   | `/api/v1/books`        | Create a new book         | `{"title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565", "description": "A classic novel"}` | Yes           |
-| PUT    | `/api/v1/books/:id`    | Update a book             | `{"description": "Updated description"}`                                                                                     | Yes           |
-| DELETE | `/api/v1/books/:id`    | Delete a book             | None (Path: `:id`)                                                                                                           | Yes           |
+| Method   | Endpoint               | Description               | Query Params / Request Body                                                                                                    | Requires Auth? |
+| -------- | ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `GET`    | `/api/v1/books`        | Get all books (paginated) | `?page=1&limit=10`                                                                                                             | ✅ Yes         |
+| `GET`    | `/api/v1/books/:id`    | Get book by ID            | None                                                                                                                           | ✅ Yes         |
+| `GET`    | `/api/v1/books/search` | Search books by title     | `?title=Gatsby`                                                                                                                | ✅ Yes         |
+| `POST`   | `/api/v1/books`        | Create a new book         | `{ "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565", "description": "A classic novel" }` | ✅ Yes         |
+| `PUT`    | `/api/v1/books/:id`    | Update a book             | `{ "description": "Updated description" }`                                                                                     | ✅ Yes         |
+| `DELETE` | `/api/v1/books/:id`    | Delete a book             | None                                                                                                                           | ✅ Yes         |
 
-### Book Reviews (New!)
+### **Book Reviews** _(New!)_
 
-| Method | Endpoint                    | Description             | Request Body Example                      | Requires Auth |
-| ------ | --------------------------- | ----------------------- | ----------------------------------------- | ------------- |
-| POST   | `/api/v1/books/:id/reviews` | Add a review for a book | `{"rating": 4, "comment": "Great read!"}` | Yes           |
-| GET    | `/api/v1/books/:id/reviews` | Get reviews for a book  | None (Path: `:id`)                        | Yes           |
+| Method | Endpoint                    | Description             | Request Body                                | Requires Auth? |
+| ------ | --------------------------- | ----------------------- | ------------------------------------------- | -------------- |
+| `POST` | `/api/v1/books/:id/reviews` | Add a review for a book | `{ "rating": 4, "comment": "Great read!" }` | ✅ Yes         |
+| `GET`  | `/api/v1/books/:id/reviews` | Get reviews for a book  | None                                        | ✅ Yes         |
+
+---
 
 ## 🔐 Authentication
 
-All protected routes require a valid JWT token in the Authorization header:
+All protected routes require a valid JWT token in the **Authorization** header:
 
-```
+```bash
 Authorization: Bearer <your-token>
 ```
 
-- Obtain a token via `/users/register` or `/users/login`
-- Use it in Swagger UI's "Authorize" button for testing
+Obtain a token via `/users/register` or `/users/login`.
+Use it in **Swagger UI**'s _"Authorize"_ button for testing.
+
+---
 
 ## 💻 Development
 
-### Project Structure
+### 📂 Project Structure
 
 ```
 src/
@@ -134,52 +150,64 @@ src/
 └── validations/    # Zod schemas
 ```
 
-### Base Classes
+### 🏛 Base Classes
 
-- `BaseEntity`: Defines common fields (id, createdAt, updatedAt)
-- `BaseModel`: Handles database operations with QuikDB
-- `BaseService`: Encapsulates business logic
-- `BaseController`: Manages HTTP requests and responses
+- **`BaseEntity`**: Defines common fields (`id`, `createdAt`, `updatedAt`)
+- **`BaseModel`**: Handles database operations with QuikDB
+- **`BaseService`**: Encapsulates business logic
+- **`BaseController`**: Manages HTTP requests and responses
+
+---
 
 ## 🧪 Testing
 
-### Unit Tests (to be implemented):
+### ✅ Unit Tests _(to be implemented)_
 
 ```bash
 npm test
 ```
 
-### Swagger Testing:
+### 📜 Swagger Testing
 
-1. Open `http://localhost:3000/api-docs`
-2. Use the "Try it out" feature with the following example inputs:
-   - Register: `{"firstName": "John", "lastName": "Doe", "email": "john.doe@example.com", "password": "password123"}`
-   - Login: `{"email": "john.doe@example.com", "password": "password123"}`
-   - Create Book: `{"title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565", "description": "A classic novel"}`
-   - Add Review: `{"rating": 4, "comment": "Great read!"}`
+Visit: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
+Use _"Try it out"_ with these sample inputs:
+
+- **Register**: `{ "firstName": "John", "lastName": "Doe", "email": "john.doe@example.com", "password": "password123" }`
+- **Login**: `{ "email": "john.doe@example.com", "password": "password123" }`
+- **Create Book**: `{ "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565", "description": "A classic novel" }`
+- **Add Review**: `{ "rating": 4, "comment": "Great read!" }`
+
+---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+1. Fork the repository.
+2. Create a feature branch:
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. Commit changes:
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. Push to branch:
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. Open a Pull Request.
+
+---
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- QuikDB team for the innovative database solution
-- Express.js community for robust framework support
-- All contributors and open-source maintainers
+---
 
 ## 📋 Todo
 
-- Add search by multiple criteria (e.g., author, ISBN)
-- Implement user profiles
-- Add book categories/tags
-- Create admin dashboard
-- Write unit and integration tests
+- [ ] Add search by multiple criteria (e.g., author, ISBN)
+- [ ] Implement user profiles
+- [ ] Add book categories/tags
+- [ ] Create an admin dashboard
