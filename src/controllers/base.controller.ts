@@ -13,10 +13,10 @@ export abstract class BaseController<T extends BaseEntity> {
 
   /**
    * @openapi
-   * '/{entity}':
+   * '/books':
    *   post:
    *     summary: Create a new entity
-   *     tags: []
+   *     tags: [Books]
    *     security:
    *       - bearerAuth: []
    *     requestBody:
@@ -60,10 +60,10 @@ export abstract class BaseController<T extends BaseEntity> {
 
   /**
    * @openapi
-   * '/{entity}/{id}':
+   * '/books/{id}':
    *   get:
    *     summary: Get an entity by ID
-   *     tags: []
+   *     tags: [Books]
    *     security:
    *       - bearerAuth: []
    *     parameters:
@@ -106,10 +106,10 @@ export abstract class BaseController<T extends BaseEntity> {
 
   /**
    * @openapi
-   * '/{entity}':
+   * '/books':
    *   get:
    *     summary: Get all entities
-   *     tags: []
+   *     tags: [ Books]
    *     security:
    *       - bearerAuth: []
    *     parameters:
@@ -160,10 +160,10 @@ export abstract class BaseController<T extends BaseEntity> {
 
   /**
    * @openapi
-   * '/{entity}/{id}':
+   * '/books/{id}':
    *   put:
    *     summary: Update an entity
-   *     tags: []
+   *     tags: [ Books]
    *     security:
    *       - bearerAuth: []
    *     parameters:
@@ -211,10 +211,10 @@ export abstract class BaseController<T extends BaseEntity> {
   }
   /**
    * @openapi
-   * '/{entity}/{id}':
+   * '/books/{id}':
    *   delete:
    *     summary: Delete an entity
-   *     tags: []
+   *     tags: [Books]
    *     security:
    *       - bearerAuth: []
    *     parameters:

@@ -44,7 +44,7 @@ app.use(rateLimiter)
 setupSwagger(app)
 
 // Routes
-app.use('/api/v1/auth/users', userRoutes)
+app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/books', bookRoutes) // This will now use auth middleware
 
 // 404 handler
@@ -59,7 +59,7 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 })
 
 // Initialize QuikDB and Start Server
-const startServer = async () => {
+export const createServer = async (): Promise<express.Application> => {
   try {
     logger.info('🚀 Initializing QuikDB...')
 
@@ -92,9 +92,10 @@ const startServer = async () => {
     logger.error('❌ Error initializing QuikDB:', error)
     process.exit(1)
   }
+  return app
 }
 
-startServer()
+createServer()
 
 // import express from 'express'
 // import cors from 'cors'

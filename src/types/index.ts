@@ -24,3 +24,12 @@ export interface Book extends BaseEntity {
   createdAt: Date | string
   updatedAt: Date | string
 }
+
+export interface Review extends BaseEntity {
+  bookId: string
+  userId: string
+  rating: number // 1-5 scale
+  comment?: string
+  createdAt: string
+  updatedAt: string
+}

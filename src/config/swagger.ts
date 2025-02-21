@@ -55,6 +55,18 @@ const options = {
           },
           required: ['firstName', 'lastName', 'email', 'password']
         },
+        Review: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            bookId: { type: 'string' },
+            userId: { type: 'string' },
+            rating: { type: 'number', minimum: 1, maximum: 5 },
+            comment: { type: 'string' },
+            createdAt: { type: 'string' },
+            updatedAt: { type: 'string' }
+          }
+        },
         Error: {
           type: 'object',
           properties: {

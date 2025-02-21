@@ -63,4 +63,35 @@ export class BookModel extends BaseModel<Book> {
   async findByAuthor(author: string): Promise<ResultRecords> {
     return this.search('author', author)
   }
+
+  async updateRatingStats(
+    bookId: string,
+    newRating: number,
+    reviewCountIncrement: number = 1
+  ): Promise<ResultBool> {
+    try {
+      const bookResult = await this.findById(bookId)
+      if ('err' in bookResult || !bookResult.ok.length) {
+        throw new Error('Book not found')
+      }
+
+      const book = bookResult.ok[0]
+      const currentRating = Number(book.fields.find(([key]) => key === 'averageRating')?.[1]) || 0
+      const currentCount = Number(book.fields.find(([key]) => key === 'reviewCount')?.[1]) || 0
+
+      const updatedCount = currentCount + reviewCountIncrement
+      const updatedRating = (currentRating * currentCount + newRating) / updatedCount
+
+      const updateData = {
+        averageRating: updatedRating,
+        reviewCount: updatedCount,
+        updatedAt: new Date().toString()
+      }
+
+      return await this.update(bookId, updateData)
+    } catch (error) {
+      logger.error(`❌ Error updating rating stats for book ${bookId}:`, error)
+      throw error
+    }
+  }
 }

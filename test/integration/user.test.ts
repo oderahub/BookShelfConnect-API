@@ -35,7 +35,7 @@ describe('Integration Tests', () => {
     firstName: 'Test',
     lastName: 'User',
     email: 'test@example.com',
-    password: 'Test123!'
+    password: 'Test123@'
   }
 
   const testBook = {
@@ -63,11 +63,8 @@ describe('Integration Tests', () => {
   })
 
   describe('User Controller', () => {
-    test('POST /api/v1/auth/users/register - should register a new user', async () => {
-      const response = await request(app)
-        .post('/api/v1/auth/users/register')
-        .send(testUser)
-        .expect(201)
+    test('POST /api/v1/users/register - should register a new user', async () => {
+      const response = await request(app).post('/api/v1/users/register').send(testUser).expect(201)
 
       expect(bcrypt.hash).toHaveBeenCalledWith(testUser.password, 10)
       expect(response.body.success).toBe(true)
@@ -76,12 +73,12 @@ describe('Integration Tests', () => {
       testUserId = response.body.data.token.split('_')[2] // Capture the actual userId
     })
 
-    test('POST /api/v1/auth/users/login - should login and return token', async () => {
-      const registerResponse = await request(app).post('/api/v1/auth/users/register').send(testUser)
+    test('POST /api/v1/users/login - should login and return token', async () => {
+      const registerResponse = await request(app).post('/api/v1/users/register').send(testUser)
       testUserId = registerResponse.body.data.token.split('_')[2]
 
       const loginResponse = await request(app)
-        .post('/api/v1/auth/users/login')
+        .post('/api/v1/users/login')
         .send({
           email: testUser.email,
           password: testUser.password
@@ -97,8 +94,8 @@ describe('Integration Tests', () => {
       authToken = loginResponse.body.data.token
     })
 
-    test('POST /api/v1/auth/users/login - should fail with invalid password', async () => {
-      await request(app).post('/api/v1/auth/users/register').send(testUser)
+    test('POST /api/v1/users/login - should fail with invalid password', async () => {
+      await request(app).post('/api/v1/users/register').send(testUser)
 
       const compareSpy = jest
         .spyOn(bcrypt, 'compare')
@@ -106,7 +103,7 @@ describe('Integration Tests', () => {
           async (data: string | Buffer, encrypted: string): Promise<boolean> => false
         )
       await request(app)
-        .post('/api/v1/auth/users/login')
+        .post('/api/v1/users/login')
         .send({
           email: testUser.email,
           password: 'wrongpassword'
@@ -119,10 +116,10 @@ describe('Integration Tests', () => {
 
   describe('Book Controller', () => {
     test('POST /api/v1/books - should create a new book', async () => {
-      const registerResponse = await request(app).post('/api/v1/auth/users/register').send(testUser)
+      const registerResponse = await request(app).post('/api/v1/users/register').send(testUser)
       testUserId = registerResponse.body.data.token.split('_')[2]
 
-      const loginResponse = await request(app).post('/api/v1/auth/users/login').send({
+      const loginResponse = await request(app).post('/api/v1/users/login').send({
         email: testUser.email,
         password: testUser.password
       })
