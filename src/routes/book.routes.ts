@@ -1,4 +1,3 @@
-// routes/book.routes.ts
 import { Router } from 'express'
 import { BookController } from '../controllers/book.controller'
 import { authMiddleware } from '../middleware/auth.middleware'
@@ -19,9 +18,7 @@ router.post('/', authMiddleware, validate(bookSchemas.create), controller.create
 router.put('/:id', authMiddleware, validate(bookSchemas.update), controller.update.bind(controller))
 router.delete('/:id', authMiddleware, controller.delete.bind(controller))
 
-// New review routes
 router.post('/:id/reviews', authMiddleware, controller.addReview.bind(controller))
 router.get('/:id/reviews', authMiddleware, controller.getReviews.bind(controller))
 
 export default router
-// routes/index.ts

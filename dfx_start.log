@@ -1,3 +1,5 @@
 Running dfx start for version 0.25.0
 Using project-specific network 'local' defined in /Users/mac/Desktop/BookShelfConnect/dfx.json
 Replica API running in the background on 0.0.0.0:4943
+ERROR: Error shutting down PocketIC gracefully: error sending request for url (http://localhost:50002/http_gateway/0/stop)
+All local network processes stopped

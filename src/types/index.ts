@@ -28,7 +28,7 @@ export interface Book extends BaseEntity {
 export interface Review extends BaseEntity {
   bookId: string
   userId: string
-  rating: number // 1-5 scale
+  rating: number
   comment?: string
   createdAt: string
   updatedAt: string
